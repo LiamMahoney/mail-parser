@@ -43,6 +43,7 @@ from .utils import (
     ported_string,
     receiveds_parsing,
     write_attachments,
+    ported_string_attachment_payload,
 )
 
 from .exceptions import MailParserEnvironmentError
@@ -384,7 +385,7 @@ class MailParser(object):
                         log.debug("Filename {!r} part {!r} is binary".format(
                             filename, i))
                     else:
-                        payload = ported_string(
+                        payload = ported_string_attachment_payload(
                             p.get_payload(decode=True), encoding=charset)
                         log.debug(
                             "Filename {!r} part {!r} is not binary".format(

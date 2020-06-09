@@ -115,7 +115,40 @@ def ported_string(raw_data, encoding='utf-8', errors='ignore'):
         except (LookupError, UnicodeDecodeError):
             return six.text_type(raw_data, "utf-8", errors).strip()
 
+@sanitize
+def ported_string_attachment_payload(raw_data, encoding='utf-8', errors='ignore'):
+    """
+    The same function as ported_string but doesn't use .strip() which can 
+    change the contents of the attachment's MD5.
 
+    Args:
+        raw_data: Python 2 str, Python 3 bytes or str to porting
+        encoding: string giving the name of an encoding
+        errors: his specifies the treatment of characters
+            which are invalid in the input encoding
+
+    Returns:
+        str (Python 3) or unicode (Python 2)
+    """
+    
+    if not raw_data:
+        return six.text_type()
+
+    if isinstance(raw_data, six.text_type):
+        return raw_data
+
+    if six.PY2:
+        try:
+            return six.text_type(raw_data, encoding, errors)
+        except LookupError:
+            return six.text_type(raw_data, "utf-8", errors)
+
+    if six.PY3:
+        try:
+            return six.text_type(raw_data, encoding)
+        except (LookupError, UnicodeDecodeError):
+            return six.text_type(raw_data, "utf-8", errors)
+            
 def decode_header_part(header):
     """
     Given an raw header returns an decoded header
